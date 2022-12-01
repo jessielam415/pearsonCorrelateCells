@@ -1,0 +1,29 @@
+Package: pearsonCorrelateCells
+Type: Package
+Title: A package to identify correlated cells based on the target expression 
+  pattern
+Version: 0.1.0
+Authors@R: person("Wing Chung Jessie", "Lam", 
+                  email = "jessiewingchung.lam@mail.utoronto.ca", 
+                  role = c("aut", "cre"))
+Maintainer: Wing Chung Jessie Lam <jessiewingchung.lam@mail.utoronto.ca>
+Description: pearsonCorrelateCells takes the top genes in a 
+  single or set of RNA-seqencing clusters, or in bulk RNA seqencing 
+  data, and carry out Pearson correlations of genes with each spot in 10X 
+  visium spatial transcriptomic data to identify the similar cells
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.2
+Depends:
+    R (>= 4.0.0)
+biocViews:
+Imports: 
+    Seurat,
+    SeuratData,    
+    shiny,
+    shinyalert
+Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
+URL: https://github.com/jessielam415/pearsonCorrelateCells
+BugReports: https://github.com/jessielam415/pearsonCorrelateCells/issues
