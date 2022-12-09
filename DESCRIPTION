@@ -22,8 +22,12 @@ Imports:
     Seurat,
     SeuratData,    
     shiny,
-    shinyalert
+    shinyalert,
+    tibble
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 URL: https://github.com/jessielam415/pearsonCorrelateCells
 BugReports: https://github.com/jessielam415/pearsonCorrelateCells/issues
+Suggests: 
+    knitr,
+    rmarkdown
