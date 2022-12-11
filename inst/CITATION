@@ -1,0 +1,12 @@
+citHeader("To cite pearsonCorrelateCells in publications use:")
+
+citEntry(
+  entry    = "Unpublished",
+  title        = "pearsonCorrelateCells",
+  author       = "Wing Chung Jessie Lam",
+  note         = "Unpublished",
+  year         = "2022",
+  textVersion  =
+  paste("Lam, W. (2022) pearsonCorrelateCells.
+        Unpublished. URL https://github.com/jessielam415/pearsonCorrelateCells.")
+)
