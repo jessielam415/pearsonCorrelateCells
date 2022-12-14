@@ -43,19 +43,18 @@ findCorrelatedCells <- function(comparator, visiumData, assay="Spatial",
   }
 
   # Check data type of comparator columns
-  if (typeof(comparator[1]) != "character") {
+  if (typeof(comparator[[1]]) != "character") {
     stop("First column of comparator must contain gene names of type character")
   }
-  if (typeof(comparator[2]) != "numeric") {
-    stop("Second column of comparator must contain gene names of type numeric")
+  if (!is.numeric(comparator[[2]])) {
+    stop("Second column of comparator must contain gene expression values of type numeric")
   }
 
   # Check if topGenes is less than or equal to total comparator rows
   # If not, throw a warning and adjust topGenes to the total number of
   # comparator rows
   if (nrow(comparator) < topGenes) {
-    warning(sprintf("The number of rows in comparator is less than inputted
-            topGenes. Using %s genes for correlation instead", nrow(comparator)))
+    warning(sprintf("The number of rows in comparator is less than inputted topGenes. Using %s genes for correlation instead", nrow(comparator)))
     topGenes <- nrow(comparator)
   }
 
@@ -116,10 +115,8 @@ findCorrelatedCells <- function(comparator, visiumData, assay="Spatial",
 visualizeCells <- function(visiumData) {
   # Check that visiumData has metadata column pearson.pvalue
   `%!in%` <- Negate(`%in%`)
-  if ("pearson.pvalue" %!in% visiumData[[]]) {
-    stop("visiumData does not include pearson.pvalue metadata column. Ensure
-         visiumData has been run through the findCorrelatedCells function before
-         using the visualizeCells function")
+  if ("pearson.pvalue" %!in% colnames(visiumData[[]])) {
+    stop("visiumData does not include pearson.pvalue metadata column. Ensure visiumData has been run through the findCorrelatedCells function before using the visualizeCells function")
   }
   visiumDataCopy <- visiumData
   significant <- (visiumDataCopy[[]]$pearson.pvalue <= 0.05)
