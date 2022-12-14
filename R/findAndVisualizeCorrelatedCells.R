@@ -28,27 +28,47 @@
 #' correlation between the gene expression of the comparator and each Visium
 #' spot
 #'
-#' examples will be added
 #'
 #' @export
-#' @import Seurat tibble
+#' @import Seurat tibble dplyr magrittr
 #' @importFrom stats cor
 #'
 #' @references
 #' Add references here
-
 findCorrelatedCells <- function(comparator, visiumData, assay="Spatial",
                            slot="data", topGenes=25) {
+  # Check the dimension of comparator
+  if (dim(comparator)[2] != 2) {
+    stop("Comparator must contain 2 columns")
+  }
+
+  # Check data type of comparator columns
+  if (typeof(comparator[1]) != "character") {
+    stop("First column of comparator must contain gene names of type character")
+  }
+  if (typeof(comparator[2]) != "numeric") {
+    stop("Second column of comparator must contain gene names of type numeric")
+  }
+
+  # Check if topGenes is less than or equal to total comparator rows
+  # If not, throw a warning and adjust topGenes to the total number of
+  # comparator rows
+  if (nrow(comparator) < topGenes) {
+    warning(sprintf("The number of rows in comparator is less than inputted
+            topGenes. Using %s genes for correlation instead", nrow(comparator)))
+    topGenes <- nrow(comparator)
+  }
+
   # Process comparator data
-  comparatorWithGeneColumn <- tibble::rownames_to_column(comparator, "geneName")
-  colnames(comparatorWithGeneColumn) <- c("geneName", "comparatorExprValue")
-  topComparatorGenes <- comparatorWithGeneColumn %>%
-    arrange(desc(comparatorExprValue)) %>%
-    slice(1:topGenes)
+  comparatorCopy <- comparator
+  colnames(comparatorCopy) <- c("geneName", "comparatorExprValue")
+  topComparatorGenes <- comparatorCopy %>%
+    dplyr::arrange(desc(comparatorExprValue)) %>%
+    dplyr::slice(1:topGenes)
 
   # Process visium assay slot
-  visiumAssaySlot <- as.data.frame(
-    Seurat::GetAssayData(object=visiumData, slot=slot, assay=assay))
+  visiumAssaySlot <- Seurat::GetAssayData(object=visiumData, slot=slot, assay=assay)
+  visiumAssaySlot <- as.data.frame(visiumAssaySlot)
   visiumAssaySlot <- tibble::rownames_to_column(visiumAssaySlot, "geneName")
 
   # Get correlations
@@ -94,10 +114,15 @@ findCorrelatedCells <- function(comparator, visiumData, assay="Spatial",
 #' @references
 #' Add references here
 visualizeCells <- function(visiumData) {
+  # Check that visiumData has metadata column pearson.pvalue
+  `%!in%` <- Negate(`%in%`)
+  if ("pearson.pvalue" %!in% visiumData[[]]) {
+    stop("visiumData does not include pearson.pvalue metadata column. Ensure
+         visiumData has been run through the findCorrelatedCells function before
+         using the visualizeCells function")
+  }
   visiumDataCopy <- visiumData
   significant <- (visiumDataCopy[[]]$pearson.pvalue <= 0.05)
-  visiumDataCopy <- Seurat::AddMetaData(object = visiumDataCopy,
-                                        metadata=significant,
-                                        col.name = 'pearson.significant')
-  return(SpatialPlot(object = visiumDataCopy, group.by = "pearson.significant"))
+  visiumDataCopy <- Seurat::AddMetaData(object = visiumDataCopy, metadata=significant, col.name = 'Significant')
+  SpatialPlot(object = visiumDataCopy, group.by = "Significant",  alpha = c(0.8, 1))
 }
