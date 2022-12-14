@@ -1,33 +1,37 @@
 #' Computes the Pearson correlation between the gene expression of a
-#' comparator dataframe and each spot in 10X Visium spatial data. Visualize
-#' the pearson correlation significance of each Visium spot.
-#'
+#' comparator dataframe and each cell spot in 10X Visium spatial data.
 #'
 #' A function that computes the pearson correlation of the gene expression of
-#' the top expressed genes in a comparator dataframe and each spot in 10X
+#' the genes in a comparator dataframe and each spot in 10X
 #' Visium spatial dataset. The alternative hypothesis is that there is a
 #' positive correlation between the spot and comparator dataframe.
 #'
-#' @param comparator A dataframe of gene expression data, with one column
-#' containing expression values. The rownames of the dataframe has to be set to
-#' the gene names corresponding to the expression values
+#' @param comparator A dataframe of gene expression data with two columns. First
+#' column contains gene names and second column contains corresponding gene
+#' expression values. The dataframe can have no or any column names.
 #' @param visiumData A 10X Visium spatial dataset loaded as a Seurat object
 #' @param assay The assay in the Seurat object to use for correlation with
 #' comparator, uses the Spatial assay by default
-#' @param slot The specific assay data to use, uses normalized data matrix
-#' (i.e. data slot) by default.
-#' @param topGenes The number of top genes in the comparator to use for pearson
-#' correlation with spatial data, by default 25. If the comparator has less than
-#' 25 genes, by default all genes in comparator are used for correlation with
-#' spatial data.
+#' @param slot The specific assay slot to use, uses data slot (i.e. normalized
+#' data matrix) by default.
+#' @param topGenes The number of genes in the comparator to use for pearson
+#' correlation with spatial data, by default uses all genes in comparator. By
+#' entering an argument to topGenes, the function will select the topGenes
+#' number of rows with highest gene expression values.
 #'
-#' @return The inputted spatialDataset Seurat object modified metadata fields
-#' "pearson.pvalue" and "pearson.estimate". "pearson.pvalue" stores the coefficient
-#' of the pearson correlation between the comparator and the corresponding
-#' Visium spot. "pearson.pvalue" that corresponds to the p-value of the pearson
-#' correlation between the gene expression of the comparator and each Visium
-#' spot
+#' @return The inputted visiumData Seurat object with additional metadata fields
+#' "pearson.pvalue" and "pearson.estimate" for each Visium spot.
+#' "pearson.pvalue" stores the correlation coefficient
+#' "pearson.pvalue" stores the p-value of the correlation
 #'
+#' @examples
+#' \dontrun{
+#' # Using the 10X Genomics Visium Mouse Brain Dataset from SeuratData
+#' SeuratData::InstallData("stxBrain")
+#' brain <- SeuratData::LoadData("stxBrain", type = "posterior1")
+#' # Using topOligoGenes dataset in package
+#' findCorrelatedCells(comparator = topOligoGenes, visiumData = brain)
+#' }
 #'
 #' @export
 #' @import Seurat tibble dplyr magrittr
@@ -36,7 +40,7 @@
 #' @references
 #' Add references here
 findCorrelatedCells <- function(comparator, visiumData, assay="Spatial",
-                           slot="data", topGenes=25) {
+                           slot="data", topGenes=nrow(comparator)) {
   # Check the dimension of comparator
   if (dim(comparator)[2] != 2) {
     stop("Comparator must contain 2 columns")
@@ -48,14 +52,6 @@ findCorrelatedCells <- function(comparator, visiumData, assay="Spatial",
   }
   if (!is.numeric(comparator[[2]])) {
     stop("Second column of comparator must contain gene expression values of type numeric")
-  }
-
-  # Check if topGenes is less than or equal to total comparator rows
-  # If not, throw a warning and adjust topGenes to the total number of
-  # comparator rows
-  if (nrow(comparator) < topGenes) {
-    warning(sprintf("The number of rows in comparator is less than inputted topGenes. Using %s genes for correlation instead", nrow(comparator)))
-    topGenes <- nrow(comparator)
   }
 
   # Process comparator data
@@ -70,7 +66,7 @@ findCorrelatedCells <- function(comparator, visiumData, assay="Spatial",
   visiumAssaySlot <- as.data.frame(visiumAssaySlot)
   visiumAssaySlot <- tibble::rownames_to_column(visiumAssaySlot, "geneName")
 
-  # Get correlations
+  # Get correlations between comparator and each Visium spot
   pValues <- numeric(ncol(x = visiumData))
   estimate <- numeric(ncol(x = visiumData))
   for (i in 2:ncol(visiumAssaySlot)) {
@@ -95,8 +91,11 @@ findCorrelatedCells <- function(comparator, visiumData, assay="Spatial",
   return(visiumData)
 }
 
+#' Visualize the significance computed Pearson correlations in each visium cell
+#' spot
+#'
 #' A function that visualizes the pearson correlation significance of each
-#' Visium spot overlayed on the Visium image
+#' Visium spot, overlayed on the Visium image
 #'
 #' @param visiumData A 10X Visium spatial dataset loaded as a Seurat object that
 #' has been processed using the findCorrelatedCells function
@@ -104,7 +103,16 @@ findCorrelatedCells <- function(comparator, visiumData, assay="Spatial",
 #' @return A plot showing the pearson correlation significance of each
 #' Visium spot overlayed on the Visium image
 #'
-#' examples will be added
+#' @examples
+#' \dontrun{
+#' # Using the 10X Genomics Visium Mouse Brain Dataset from SeuratData
+#' SeuratData::InstallData("stxBrain")
+#' brain <- SeuratData::LoadData("stxBrain", type = "posterior1")
+#' # Using topOligoGenes dataset in package
+#' brainWithPearson <- findCorrelatedCells(comparator = topOligoGenes,
+#' visiumData = brain)
+#' visualizeCells(brainWithPearson)
+#' }
 #'
 #' @export
 #' @import Seurat

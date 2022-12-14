@@ -2,8 +2,8 @@
 % Please edit documentation in R/findAndVisualizeCorrelatedCells.R
 \name{visualizeCells}
 \alias{visualizeCells}
-\title{A function that visualizes the pearson correlation significance of each
-Visium spot overlayed on the Visium image}
+\title{Visualize the significance computed Pearson correlations in each visium cell
+spot}
 \usage{
 visualizeCells(visiumData)
 }
@@ -14,12 +14,22 @@ has been processed using the findCorrelatedCells function}
 \value{
 A plot showing the pearson correlation significance of each
 Visium spot overlayed on the Visium image
-
-examples will be added
 }
 \description{
 A function that visualizes the pearson correlation significance of each
-Visium spot overlayed on the Visium image
+Visium spot, overlayed on the Visium image
+}
+\examples{
+\dontrun{
+# Using the 10X Genomics Visium Mouse Brain Dataset from SeuratData
+SeuratData::InstallData("stxBrain")
+brain <- SeuratData::LoadData("stxBrain", type = "posterior1")
+# Using topOligoGenes dataset in package
+brainWithPearson <- findCorrelatedCells(comparator = topOligoGenes,
+visiumData = brain)
+visualizeCells(brainWithPearson)
+}
+
 }
 \references{
 Add references here

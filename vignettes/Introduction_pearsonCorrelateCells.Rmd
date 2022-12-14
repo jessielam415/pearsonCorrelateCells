@@ -1,0 +1,103 @@
+---
+title: "Introduction_pearsonCorrelateCells"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction_pearsonCorrelateCells}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+# The following code is from https://github.com/anjalisilva/TestingPackage/blob/master/vignettes/Introduction_TestPackage.Rmd
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(fig.align = "center", 
+               out.width = "90%",
+               fig.width = 6, fig.height = 5.5,
+               dev.args=list(pointsize=10),
+               par = TRUE, # needed for setting hook 
+               collapse = TRUE, # collapse input & ouput code in chunks
+               warning = FALSE)
+knit_hooks$set(par = function(before, options, envir)
+  { if(before && options$fig.show != "none") 
+       par(family = "sans", mar=c(4.1,4.1,1.1,1.1), mgp=c(3,1,0), tcl=-0.5)
+})
+set.seed(1) # for exact reproducibility
+```
+
+## Introduction
+
+`pearsonCorrelateCells` is an R package that works with [10X Visium Spatial Transcriptomic](https://www.10xgenomics.com/products/spatial-gene-expression) data. The package is developed to allow the identification and visualization of cells that exhibit gene expression patterns correlated with that of a comparator. Correlations are calculated using Pearson Product-Moment Correlation. The comparator is a dataframe that contains gene names and corresponding expression values.
+
+Gene expression data in the comparator can be taken from any source. Here are some anticipated use cases:
+
+1) The comparator is averaged or differential expression of a cluster in RNA-sequencing data. The goal is to find cells in 10X Visium that are most similar to this cluster. 
+
+2) The comparator is averaged gene expression of samples of interest in bulk RNA-sequencing data
+
+The idea of this package came from a conversation with Professor Scott Yuzwa (personal communication, September 23, 2022). According to Professor Yuzwa, some researchers use pearson correlations to identify neural stem cells in spatial transcriptomic data of brains of mice with a stroke. 
+
+**This document gives a tour of pearsonCorrelateCells (version 0.1.0)**. See `help(package = "pearsonCorrelateCells")` for further details.
+
+To download **pearsonCorrelateCells**, use the following commands:
+
+``` r
+require("devtools")
+devtools::install_github("jessielam415/pearsonCorrelateCells", build_vignettes = TRUE)
+library("pearsonCorrelateCells")
+```
+
+To list all functions available in the package:
+
+``` r
+ls("package:pearsonCorrelateCells")
+```
+
+To list the sample dataset available in the package:
+
+``` r
+data(package = "pearsonCorrelateCells")
+```
+
+<br>
+
+## Example Usage
+
+In this example, we will be using the 10X Genomics Visium Mouse Brain Dataset from SeuratData as our spatial transcriptoic dataset to analyze (Cite). We will be using the topOligoGenes dataset included in this package as the comparator. The topOligoGenes dataset is a dataframe generated from extracting oligodendrocyte gene expression from the reference scRNA-seq dataset of ~14,000 adult mouse cortical cell taxonomy from the Allen Institute (Cite).
+
+To computes the pearson correlation of the gene expression of the genes in the comparator dataframe and each cell spot in the 10X Visium dataset, we use the findCorrelatedCells function. The function returns the inputted visium dataset seurat object with additional metadata fields "pearson.pvalue" and "pearson.estimate" for each Visium spot. "pearson.pvalue" stores the correlation coefficient and "pearson.pvalue" stores the p-value of the correlation.
+``` r
+SeuratData::InstallData("stxBrain")
+brain <- SeuratData::LoadData("stxBrain", type = "posterior1")
+brainWithPearson <- findCorrelatedCells(comparator = topOligoGenes, visiumData = brain)
+#'
+```
+
+To visualize the significance of the pearson correlations we computed in the findCorrelatedCells function, we can use the visualizeCells function. This function outputs a plot of that visualizes the pearson correlation significance of each
+Visium spot, overlayed onto the Visium image.
+``` r
+visualizeCells(brainWithPearson)
+```
+
+## Package References
+
+[Lam, W. (2022) Compare Pseudogenes. Unpublished.](https://github.com/jessielam415/pearsonCorrelateCells)
+
+<br>
+
+## References
+
+Bache S, Wickham H (2022). magrittr: A Forward-Pipe Operator for R. [https://magrittr.tidyverse.org](https://magrittr.tidyverse.org), [https://github.com/tidyverse/magrittr](https://github.com/tidyverse/magrittr).
+
+Hahsler M, Nagar A (2019). rBLAST: R Interface for the Basic Local Alignment Search Tool. R package version 0.99.2. [https://github.com/mhahsler/rBLAST](https://github.com/mhahsler/rBLAST).
+
+Silva, A. (2022). Anjalisilva/TestingPackage: A Simple R Package Illustrating Components of an R Package: 2019-2022 BCB410H - Applied Bioinformatics, University of Toronto, Canada. GitHub. [https://github.com/anjalisilva/TestingPackage](https://github.com/anjalisilva/TestingPackage)
+
+Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York. ISBN 978-3-319-24277-4. [https://ggplot2.tidyverse.org](https://ggplot2.tidyverse.org)
+
+Wickham H, François R, Henry L, Müller K (2022). dplyr: A Grammar of Data Manipulation. [https://dplyr.tidyverse.org](https://dplyr.tidyverse.org), [https://github.com/tidyverse/dplyr](https://github.com/tidyverse/dplyr).
+
+----
+
+```{r}
+sessionInfo()
+```

@@ -25,11 +25,3 @@ test_that("Wrong comparator column type raises throws error", {
   expect_equal(geterrmessage(),
                "Second column of comparator must contain gene expression values of type numeric")
 })
-
-test_that("Having topGenes paramater be larger than total number of comparator rows throws warning", {
-  testDf <- data.frame(firstColumn  = c("Malat1", "Plp1", "Ptgds"),
-                         secondColumn = c(100, 200, 300))
-  func <- expect_warning(findCorrelatedCells(comparator = testDf, visiumData = brain,
-                                     assay="Spatial"))
-  expect_equal(func$message, "The number of rows in comparator is less than inputted topGenes. Using 3 genes for correlation instead")
-})

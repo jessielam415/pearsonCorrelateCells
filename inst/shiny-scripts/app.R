@@ -55,8 +55,8 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output, session) {
 
-  InstallData("stxBrain")
-  brain <- LoadData("stxBrain", type = "posterior1")
+  SeuratData::InstallData("stxBrain")
+  brain <- SeuratData::LoadData("stxBrain", type = "posterior1")
   hide("loadingIndicator")
   show("brainPlot")
 
@@ -97,7 +97,7 @@ server <- function(input, output, session) {
       }
     )
     brainCorrelated <- findCorrelatedCells(comparator = uploadedFileDf, visiumData = brain,
-                                           assay="Spatial", topGenes = nrow(uploadedFileDf))
+                                           assay="Spatial")
     hide("processingIndicator")
     values$imgPlot <- renderImage({
       img <- htmltools::capturePlot({

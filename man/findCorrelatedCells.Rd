@@ -3,50 +3,55 @@
 \name{findCorrelatedCells}
 \alias{findCorrelatedCells}
 \title{Computes the Pearson correlation between the gene expression of a
-comparator dataframe and each spot in 10X Visium spatial data. Visualize
-the pearson correlation significance of each Visium spot.}
+comparator dataframe and each cell spot in 10X Visium spatial data.}
 \usage{
 findCorrelatedCells(
   comparator,
   visiumData,
   assay = "Spatial",
   slot = "data",
-  topGenes = 25
+  topGenes = nrow(comparator)
 )
 }
 \arguments{
-\item{comparator}{A dataframe of gene expression data, with one column
-containing expression values. The rownames of the dataframe has to be set to
-the gene names corresponding to the expression values}
+\item{comparator}{A dataframe of gene expression data with two columns. First
+column contains gene names and second column contains corresponding gene
+expression values. The dataframe can have no or any column names.}
 
 \item{visiumData}{A 10X Visium spatial dataset loaded as a Seurat object}
 
 \item{assay}{The assay in the Seurat object to use for correlation with
 comparator, uses the Spatial assay by default}
 
-\item{slot}{The specific assay data to use, uses normalized data matrix
-(i.e. data slot) by default.}
+\item{slot}{The specific assay slot to use, uses data slot (i.e. normalized
+data matrix) by default.}
 
-\item{topGenes}{The number of top genes in the comparator to use for pearson
-correlation with spatial data, by default 25. If the comparator has less than
-25 genes, by default all genes in comparator are used for correlation with
-spatial data.}
+\item{topGenes}{The number of genes in the comparator to use for pearson
+correlation with spatial data, by default uses all genes in comparator. By
+entering an argument to topGenes, the function will select the topGenes
+number of rows with highest gene expression values.}
 }
 \value{
-The inputted spatialDataset Seurat object modified metadata fields
-"pearson.pvalue" and "pearson.estimate". "pearson.pvalue" stores the coefficient
-of the pearson correlation between the comparator and the corresponding
-Visium spot. "pearson.pvalue" that corresponds to the p-value of the pearson
-correlation between the gene expression of the comparator and each Visium
-spot
-
-examples will be added
+The inputted visiumData Seurat object with additional metadata fields
+"pearson.pvalue" and "pearson.estimate" for each Visium spot.
+"pearson.pvalue" stores the correlation coefficient
+"pearson.pvalue" stores the p-value of the correlation
 }
 \description{
 A function that computes the pearson correlation of the gene expression of
-the top expressed genes in a comparator dataframe and each spot in 10X
+the genes in a comparator dataframe and each spot in 10X
 Visium spatial dataset. The alternative hypothesis is that there is a
 positive correlation between the spot and comparator dataframe.
+}
+\examples{
+\dontrun{
+# Using the 10X Genomics Visium Mouse Brain Dataset from SeuratData
+SeuratData::InstallData("stxBrain")
+brain <- SeuratData::LoadData("stxBrain", type = "posterior1")
+# Using topOligoGenes dataset in package
+findCorrelatedCells(comparator = topOligoGenes, visiumData = brain)
+}
+
 }
 \references{
 Add references here
