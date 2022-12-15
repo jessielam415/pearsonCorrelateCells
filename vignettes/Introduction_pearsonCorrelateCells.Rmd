@@ -71,7 +71,7 @@ To computes the pearson correlation of the gene expression of the genes in the c
 ``` r
 SeuratData::InstallData("stxBrain")
 brain <- SeuratData::LoadData("stxBrain", type = "posterior1")
-brainWithPearson <- findCorrelatedCells(comparator = topOligoGenes, visiumData = brain)ß
+brainWithPearson <- findCorrelatedCells(comparator = topOligoGenes, visiumData = brain)
 ```
 
 To visualize the significance of the pearson correlations we computed in the findCorrelatedCells function, we can use the visualizeCells function. This function outputs a plot of that visualizes the pearson correlation significance of each

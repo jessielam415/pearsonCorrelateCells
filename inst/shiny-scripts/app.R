@@ -7,7 +7,7 @@ library(shinyjs)
 # https://stackoverflow.com/questions/43619046/how-to-initialise-default-values-for-rendered-items-in-a-shiny-app
 # https://github.com/rstudio/shiny/issues/3170
 # https://shiny.rstudio.com/gallery/file-upload.html
-
+# https://shiny.rstudio.com/gallery/file-download.html
 
 # Define UI
 ui <- fluidPage(
@@ -18,14 +18,14 @@ ui <- fluidPage(
     Spatial Transcriptomic data. The package is developed to allow the
     identification and visualization of cells that exhibit gene expression
     patterns correlated with that of a comparator. Correlations are calculated
-    using Pearson Product-Moment Correlation.
+    using Pearson Product-Moment Correlation. \n
 
          This Shiny app demonstrates the capabilities of the
          pearsonCorrelateCells package. The posterior slide 10X Genomics
          Visium Sagittal Mouse Brain (Lab S, 2019) is used here. You may upload a csv file
            with genes and corresponding expression. You will then see
            whether each spot in the Mouse Brain spatial data has a significant
-           positive correlation with the genes expression in the file you
+           positive correlation with the gene expression in the file you
            uploaded."),
     style="margin-left: 15px"
   ),
