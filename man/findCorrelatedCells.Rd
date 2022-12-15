@@ -49,7 +49,9 @@ positive correlation between the spot and comparator dataframe.
 SeuratData::InstallData("stxBrain")
 brain <- SeuratData::LoadData("stxBrain", type = "posterior1")
 # Using topOligoGenes dataset in package
-findCorrelatedCells(comparator = topOligoGenes, visiumData = brain)
+brainWithPearson <- findCorrelatedCells(comparator = topOligoGenes, visiumData = brain)
+# View metadata
+brainWithPearson[[]]
 }
 
 }

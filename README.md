@@ -28,8 +28,7 @@ Here are some anticipated use cases:
 The idea of this package came from a conversation with Professor Scott
 Yuzwa (personal communication, September 23, 2022). According to
 Professor Yuzwa, some researchers use pearson correlations to identify
-neural stem cells in spatial transcriptomic data of brains of mice with
-a stroke.
+specific cell types in spatial transcriptomic data.
 
 This functions in this package work with 10X Visium Data that is loaded
 as a Seurat object. To learn how to load 10X Visium datasets as Seurat
@@ -51,7 +50,7 @@ The shiny app in this package demonstrates the package’s utility by
 allowing users to upload csv files of gene expression data. The gene
 expression data is correlated with each spot in a sample Visium spatial
 transcriptomic dataset. The chosen dataset is the 10X Genomics Visium
-Mouse Brain Dataset. To run the shinyApp:
+Mouse Brain Dataset (Lab S, 2019). To run the shinyApp:
 
 ``` r
 pearsonCorrelateCells::runPearsonCorrelateCells()
@@ -81,11 +80,21 @@ browseVignettes("pearsonCorrelateCells")
 
 The author of the package is Wing Chung Jessie Lam.
 
-The *findCorrelatedCells* function makes use of the \[\] functions from
-the \[\] r package to \[\]
+The *findCorrelatedCells* function makes use of the arrange and slice
+functions from the dplyr r package, the cor.test function in the stats
+package, the rownames_to_column function from the tibble r package, the
+%\>% function from the magrittr package, as well as the GetAssayData and
+AddMetaObject function from the Seurat package.
 
-The *visualizeCells* function makes use the \[\] functions from the \[\]
-r package to \[\]
+The *visualizeCells* function makes use the AddMetaData and SpatialPlot
+functions from the Seurat package.
+
+The shiny package is used to create the Shiny application.
+
+The InstallData and LoadData functions from the SeuratData package is
+used to load the 10X Genomics Visium Mouse Brain Dataset into both the
+shiny app, and in the *findCorrelatedCells* and *visualizeCells*
+function documentation examples.
 
 ## References
 
@@ -93,18 +102,28 @@ Bache S, Wickham H (2022). magrittr: A Forward-Pipe Operator for R.
 <https://magrittr.tidyverse.org>,
 <https://github.com/tidyverse/magrittr>.
 
-Hahsler M, Nagar A (2019). rBLAST: R Interface for the Basic Local
-Alignment Search Tool. R package version 0.99.2.
-<https://github.com/mhahsler/rBLAST>.
+Hao Y, Hao S, Andersen-Nissen E, III WMM, Zheng S, Butler A, Lee MJ,
+Wilk AJ, Darby C, Zagar M, Hoffman P, Stoeckius M, Papalexi E, Mimitou
+EP, Jain J, Srivastava A, Stuart T, Fleming LB, Yeung B, Rogers AJ,
+McElrath JM, Blish CA, Gottardo R, Smibert P, Satija R (2021).
+Integrated analysis of multimodal single-cell data. Cell.
+<doi:10.1016/j.cell.2021.04.048>,
+<https://doi.org/10.1016/j.cell.2021.04.048>.
 
-Silva, A. (2022). Anjalisilva/TestingPackage: A Simple R Package
+Lab S (2019). *stxBrain.SeuratData: 10X Genomics Visium Mouse Brain
+Dataset*. R package version 0.1.1.
+
+Müller K, Wickham H (2022). tibble: Simple Data Frames.
+<https://tibble.tidyverse.org/>, <https://github.com/tidyverse/tibble>.
+
+Silva A. (2022). Anjalisilva/TestingPackage: A Simple R Package
 Illustrating Components of an R Package: 2019-2022 BCB410H - Applied
 Bioinformatics, University of Toronto, Canada. GitHub.
 <https://github.com/anjalisilva/TestingPackage>
 
-Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis.
-Springer-Verlag New York. ISBN 978-3-319-24277-4.
-<https://ggplot2.tidyverse.org>
+Tasic B, Menon V, Nguyen T. et al (2016). Adult mouse cortical cell
+taxonomy revealed by single cell transcriptomics. Nat Neurosci 19,
+335–346. <https://doi.org/10.1038/nn.4216>
 
 Wickham H, François R, Henry L, Müller K (2022). dplyr: A Grammar of
 Data Manipulation. <https://dplyr.tidyverse.org>,
@@ -114,5 +133,5 @@ Data Manipulation. <https://dplyr.tidyverse.org>,
 
 This package was developed as part of an assessment for 2022 BCB410H:
 Applied Bioinformatics course at the University of Toronto, Toronto,
-CANADA. `ComparePseudogenes` welcomes issues, enhancement requests, and
-other contributions. To submit an issue, use the GitHub issues.
+CANADA. `pearsonCorrelateCells` welcomes issues, enhancement requests,
+and other contributions. To submit an issue, use the GitHub issues.

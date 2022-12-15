@@ -30,7 +30,9 @@
 #' SeuratData::InstallData("stxBrain")
 #' brain <- SeuratData::LoadData("stxBrain", type = "posterior1")
 #' # Using topOligoGenes dataset in package
-#' findCorrelatedCells(comparator = topOligoGenes, visiumData = brain)
+#' brainWithPearson <- findCorrelatedCells(comparator = topOligoGenes, visiumData = brain)
+#' # View metadata
+#' brainWithPearson[[]]
 #' }
 #'
 #' @export
@@ -60,6 +62,14 @@ findCorrelatedCells <- function(comparator, visiumData, assay="Spatial",
   topComparatorGenes <- comparatorCopy %>%
     dplyr::arrange(desc(comparatorExprValue)) %>%
     dplyr::slice(1:topGenes)
+
+  # Check if there is enough common genes in comparator and visiumData to carry
+  # out pearson correlations
+  if (length(intersect(rownames(x = visiumData), topComparatorGenes$geneName))
+      < 3) {
+    stop(sprintf("The %s selected genes in the comparator and do not have enough genes in common with visiumData for pearson correlations. Need at least 3 common genes",
+                 topGenes))
+  }
 
   # Process visium assay slot
   visiumAssaySlot <- Seurat::GetAssayData(object=visiumData, slot=slot, assay=assay)
@@ -129,5 +139,5 @@ visualizeCells <- function(visiumData) {
   visiumDataCopy <- visiumData
   significant <- (visiumDataCopy[[]]$pearson.pvalue <= 0.05)
   visiumDataCopy <- Seurat::AddMetaData(object = visiumDataCopy, metadata=significant, col.name = 'Significant')
-  SpatialPlot(object = visiumDataCopy, group.by = "Significant",  alpha = c(0.8, 1))
+  Seurat::SpatialPlot(object = visiumDataCopy, group.by = "Significant",  alpha = c(0.8, 1))
 }
