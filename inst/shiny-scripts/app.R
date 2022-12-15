@@ -19,9 +19,10 @@ ui <- fluidPage(
     identification and visualization of cells that exhibit gene expression
     patterns correlated with that of a comparator. Correlations are calculated
     using Pearson Product-Moment Correlation.
+
          This Shiny app demonstrates the capabilities of the
          pearsonCorrelateCells package. The posterior slide 10X Genomics
-         Visium Sagittal Mouse Brain(Lab S, 2019) is used here. You may upload a csv file
+         Visium Sagittal Mouse Brain (Lab S, 2019) is used here. You may upload a csv file
            with genes and corresponding expression. You will then see
            whether each spot in the Mouse Brain spatial data has a significant
            positive correlation with the genes expression in the file you
