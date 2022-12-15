@@ -35,6 +35,7 @@ ui <- fluidPage(
            with two columns, the first column containing gene names and the
            second column containing gene expression values. There should be no headers in your CSV file.
            Here is an example file"),
+    downloadButton("downloadData", "Download example csv"),
     br(),
     br(),
     fileInput(inputId="uploadedFile", label="Choose gene expression CSV file",
